@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700&display=swap');
+
+body{
+    margin: 0;
+    padding: 0;
+    background-color: #086375;
+    width: 100%;
+    height: calc(100vh - 30px);
+    font-family: 'Lato', sans-serif;;
+}
+#map{
+    margin-top: 20PX;
+    width: 100%;
+    height: calc(100vh - 125px);
+}
+h2{
+    color: #cccce6;
+    margin: 0;
+    text-align: center;
+}
+.busqueda {
+    padding: 5px;
+    width: 230px;
+    margin-left: 30px;
+    border-radius: 5px;
+    border: none;
+}
+.btn-buscar {
+    font-family: sans-serif;
+    font-weight: 600;
+    padding: 6px 10px;
+    color: #FFF;
+    background-color: #69A297;
+    border: none;
+    font-weight: 100;
+    border-radius: 5px;
+    margin: 5px 0;
+}
+.btn-buscar:hover {
+    background-color: #59968a;
+}
+.distr {
+    padding: 5px;
+    width: 200px;
+    margin-left: 30px;
+    border-radius: 5px;
+    border: none;
+}

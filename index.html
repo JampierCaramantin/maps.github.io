@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+
+    <link rel="stylesheet" href="maps.css">
+
+    <!-- Etiquetas-->
+    <link rel="stylesheet" href="dist/leaflet.awesome-markers.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Etiquetas-->
+
+    <title>:. Mapa 🌎 .:</title>
+</head>
+<body>
+    <h2>Maps</h2>
+    
+    <input type="text" id="coordenadas" placeholder="Ingresa coordenadas press ENTER" class="busqueda">
+    <button onclick="buscarUbicacion()" class="btn-buscar">Buscar</button>
+
+    <select name="select-location" id="select-location" class="distr">
+        <option value="-1">Seleccione un Lugar</option>
+        <option value="-11.86493458099233, -77.07464767703473">Puente Piedra</option>
+        <option value="-11.97557421805167, -77.00110667355759">San Juan de Lurigancho</option>
+        <option value="-11.978183487105436, -76.83960811223577">Lurigancho</option>
+        <option value="-11.93404094087489, -77.04610423065661">Comas</option>
+        <option value="-11.96252362611667, -77.06868447922658">Los Olivos</option>
+        <option value="-11.996191458011223, -77.09307977604108">San Martín de Porres</option>
+        <option value="-11.984578648576422, -76.76568677019527">Chaclacayo</option>
+        <option value="-11.990926218901324, -77.05272205832999">Independencia</option>
+        <option value="-12.021878719231436, -76.88941023805218">Ate</option>
+        <option value="-12.024874693513116, -77.03395069842851">Rímac</option>
+        <option value="-12.037600831884157, -76.99776262828132">El Agustino</option>
+        <option value="-12.050946, -77.033043">Lima</option>
+        <option value="CARMEN DE LA LEGUA">Carmen de la Legua</option>
+        <option value="-12.061774, -77.04845">Breña</option>
+        <option value="BELLAVISTA">Bellavista</option>
+        <option value="LA MOLINA">La Molina</option>
+        <option value="LA VICTORIA">La Victoria</option>
+        <option value="SAN LUIS">San Luis</option>
+        <option value="-12.073357, -77.050252">Jesús María</option>
+        <option value="-12.075497, -77.069693">Pueblo Libre</option>
+        <option value="SURCO">Surco</option>
+        <option value="SAN BORJA">San Borja</option>
+        <option value="SURQUILLO">Surquillo</option>
+        <option value="SAN JUAN DE MIRAFLORES">San Juan de Miraflores</option>
+        <option value="VILLA MARIA DEL TRIUNFO">Villa María del Triunfo</option>
+        <option value="CHORRILLOS">Chorrillos</option>
+        <option value="PUNTA HERMOSA">Punta Hermosa</option>
+        <option value="PUNTA NEGRA">Punta Negra</option>
+        <option value="SAN BARTOLO">San Bartolo</option>
+        <option value="SANTA MARIA DEL MAR">Santa María del Mar</option>
+        <option value="LURIN">Lurín</option>
+        <option value="VILLA EL SALVADOR">Villa El Salvador</option>
+        <option value="CIENEGUILLA">Cieneguilla</option>
+        <option value="CARABAYLLO">Carabayllo</option>
+        <option value="VENTANILLA">Ventanilla</option>
+        <option value="ANCON">Ancón</option>
+        <option value="MIRAFLORES">Miraflores</option>
+        <option value="SAN ISIDRO">San Isidro</option>
+        <option value="MAGDALENA DEL MAR">Magdalena del Mar</option>
+        <option value="SAN MIGUEL">San Miguel</option>
+        <option value="LA PERLA">La Perla</option>
+        <option value="CALLAO">Callao</option>
+        <option value="SANTA ROSA">Santa Rosa</option>
+        <option value="LA PUNTA">La Punta</option>
+        <option value="PUCUSANA">Pucusana</option>
+    </select>
+
+    <form id="search-form">
+        <input type="text" id="address-input" placeholder="Ingresa una dirección" class="busqueda"/>
+        <button type="submit" class="btn-buscar">Buscar</button>
+    </form>
+
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="maps.js"></script>
+    <script src="distritos.js"></script>
+
+    <script src="lug_interes.js"></script>
+    <script src="dist/leaflet.awesome-markers.js"></script>
+
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+</body>
+</html>
