@@ -13,10 +13,10 @@ var satelite = L.tileLayer(
     });
 }
 var calles = L.tileLayer('http://www.guiacalles.co/calles/{z}/{x}/{y}.jpg', {
-        /*maxZoom: 17,*/
-    attribution: '<a>👻CodeGhost</a> ' +
-    '&nbsp;&nbsp;&nbsp;&nbsp;',
-    id: 'mapbox.streets'});
+    // maxZoom: 17, // Comentado para desactivar temporalmente
+    attribution: '<a>👻CodeGhost</a> &nbsp;&nbsp;&nbsp;&nbsp;',
+    id: 'mapbox.streets'
+});
     
 var CartoDB_VoyagerLabelsUnder = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
