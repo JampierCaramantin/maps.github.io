@@ -11,7 +11,6 @@ var satelite = L.tileLayer(
     attribution: '&copy; ' + mapLink,
         /*maxZoom: 17,*/
     });
-}
 var calles = L.tileLayer('http://www.guiacalles.co/calles/{z}/{x}/{y}.jpg', {
     // maxZoom: 17, // Comentado para desactivar temporalmente
     attribution: '<a>👻CodeGhost</a> &nbsp;&nbsp;&nbsp;&nbsp;',
