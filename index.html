@@ -8,11 +8,14 @@
     crossorigin=""/>
 
     <link rel="stylesheet" href="maps.css">
+    <link rel="stylesheet" href="modal_buscar_data.css">
 
     <!-- Etiquetas-->
     <link rel="stylesheet" href="dist/leaflet.awesome-markers.css">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <!-- Etiquetas-->
 
     <title>:. Mapa 🌎 .:</title>
@@ -25,6 +28,7 @@
 
     <select name="select-location" id="select-location" class="distr">
         <option value="-1">Seleccione un Lugar</option>
+        <!-- <option value="-12.0510554271, -77.0490377322">Lima</option> -->
         <option value="-11.86493458099233, -77.07464767703473">Puente Piedra</option>
         <option value="-11.97557421805167, -77.00110667355759">San Juan de Lurigancho</option>
         <option value="-11.978183487105436, -76.83960811223577">Lurigancho</option>
@@ -40,44 +44,71 @@
         <option value="CARMEN DE LA LEGUA">Carmen de la Legua</option>
         <option value="-12.061774, -77.04845">Breña</option>
         <option value="BELLAVISTA">Bellavista</option>
-        <option value="LA MOLINA">La Molina</option>
-        <option value="LA VICTORIA">La Victoria</option>
-        <option value="SAN LUIS">San Luis</option>
+        <option value="-12.0879993406, -76.9258984551">La Molina</option>
+        <option value="-12.0723184628, -77.0173714881">La Victoria</option>
+        <option value="-12.0741048546, -76.9972984501">San Luis</option>
         <option value="-12.073357, -77.050252">Jesús María</option>
         <option value="-12.075497, -77.069693">Pueblo Libre</option>
-        <option value="SURCO">Surco</option>
-        <option value="SAN BORJA">San Borja</option>
-        <option value="SURQUILLO">Surquillo</option>
-        <option value="SAN JUAN DE MIRAFLORES">San Juan de Miraflores</option>
+        <option value="-12.1272261836, -76.9845188056">Santiago De Surco</option>
+        <option value="-12.0975356033, -76.9952627269">San Borja</option>
+        <option value="-12.113401365, -77.0129895952">Surquillo</option>
+        <option value="-12.1578203594, -76.9665238387">San Juan de Miraflores</option>
         <option value="VILLA MARIA DEL TRIUNFO">Villa María del Triunfo</option>
         <option value="CHORRILLOS">Chorrillos</option>
         <option value="PUNTA HERMOSA">Punta Hermosa</option>
         <option value="PUNTA NEGRA">Punta Negra</option>
         <option value="SAN BARTOLO">San Bartolo</option>
-        <option value="SANTA MARIA DEL MAR">Santa María del Mar</option>
-        <option value="LURIN">Lurín</option>
+        <option value="-12.4087115867, -76.7673087796">Santa María del Mar</option>
+        <option value="-12.2343483538, -76.8015572686">Lurín</option>
         <option value="VILLA EL SALVADOR">Villa El Salvador</option>
-        <option value="CIENEGUILLA">Cieneguilla</option>
-        <option value="CARABAYLLO">Carabayllo</option>
-        <option value="VENTANILLA">Ventanilla</option>
-        <option value="ANCON">Ancón</option>
-        <option value="MIRAFLORES">Miraflores</option>
-        <option value="SAN ISIDRO">San Isidro</option>
-        <option value="MAGDALENA DEL MAR">Magdalena del Mar</option>
-        <option value="SAN MIGUEL">San Miguel</option>
-        <option value="LA PERLA">La Perla</option>
-        <option value="CALLAO">Callao</option>
-        <option value="SANTA ROSA">Santa Rosa</option>
-        <option value="LA PUNTA">La Punta</option>
-        <option value="PUCUSANA">Pucusana</option>
+        <option value="-12.072938, -76.777085">Cieneguilla</option>
+        <option value="-11.8074226462, -76.9729546072">Carabayllo</option>
+        <option value="-11.878102, -77.130375">Ventanilla</option>
+        <option value="-11.702568503, -77.0958901385">Ancón</option>
+        <option value="-12.1207933935, -77.029088411">Miraflores</option>
+        <option value="-12.0990010539, -77.0367723891">San Isidro</option>
+        <option value="-12.094578172, -77.0670147948">Magdalena del Mar</option>
+        <option value="-12.0765987497, -77.0900896423">San Miguel</option>
+        <option value="-12.06616, -77.108402">La Perla</option>
+        <option value="-12.055857, -77.1387">Callao</option>
+        <option value="-11.8048866225, -77.1633216574">Santa Rosa</option>
+        <option value="-12.070997, -77.163087">La Punta</option>
+        <option value="-12.4662357218, -76.7759877776">Pucusana</option>
+        <option value="-12.0432355795, -76.9632530075">Santa Anita</option>
+    </select>
+
+    <select name="select-distrito" id="comboDistritos" class="distr">
+        <option value="">Seleccione un distrito</option>
+        <!-- Las opciones se cargarán dinámicamente desde el JSON -->
     </select>
 
     <form id="search-form">
         <input type="text" id="address-input" placeholder="Ingresa una dirección" class="busqueda"/>
         <button type="submit" class="btn-buscar">Buscar</button>
     </form>
-
+    <input type="file" id="fileInput" />
+    <button id="openModal">Filtros</button>
     <div id="map"></div>
+
+
+    <div id="overlay"></div>
+    <div id="modal">
+      <h2>Filtros</h2>
+      <label for="zonaSelect">Zona:</label>
+      <select id="zonaSelect">
+        <option value="">-- Todas las Zonas --</option>
+      </select>
+      <br><br>
+      <label for="clienteInput">Buscar Cliente:</label>
+      <input type="text" id="clienteInput" placeholder="Nombre del cliente..." />
+      <ul id="suggestions" style="list-style: none; padding: 0; margin-top: 5px;"></ul>
+      <br>
+      <button id="applyFilters">Aplicar Filtros</button>
+    </div>
+
+
+
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="maps.js"></script>
     <script src="distritos.js"></script>
@@ -86,5 +117,7 @@
     <script src="dist/leaflet.awesome-markers.js"></script>
 
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script src="distritos-mapa.js"></script>
+    <script src="cargar_excel.js"></script>
 </body>
 </html>

@@ -46,20 +46,6 @@ var baseMaps = {
 
 L.control.layers(baseMaps).addTo(map)
 
-/*L.marker = L.marker([50,20]).addTo(map)
-    .bindPopup('<a href="http://maps.google.com/maps?q=&layer=c&cbll=-12.0798517,-77.004545cbp=11,0,0,0,0"target="_blank"> <b> Google Street Viev</b></a>').openPopup();
- ------- probando -------- 
- map.on('click', function(e) {
-    let lat = e.latlng.lat.toPrecision(8);
-    let lon = e.latlng.lat.toPrecision(8);
-    const point = L.marker([lat,lon]).addTo(map)
-        .bindPopup('<a href="http://maps.google.com/maps?q=&layer=c&cbll=' + lat + ',' + lon + '$cbp=11,0,0,0,0" target="_blank"> <b> Google Street Viev</b></a>').openPopup();
- })
- */
-
-//marcador 
-// var marker <-- creamos variable en la cual le daremos el valor de la clase marker
-/*var marker = L.marker([-12.0798517,-77.004545]).addTo(map);*/
 
 
  /** manejo de distritos mediante select */
@@ -69,8 +55,6 @@ document.getElementById('select-location').addEventListener('change', function(e
 })
 
 /** buqeuda por coordenadas */
-
-//var map = L.map('map').setView([0, 0], 2);  // Inicializa el mapa en el centro del mundo
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
