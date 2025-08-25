@@ -29,9 +29,9 @@ function drawPolygon(districtName) {
     );
 
     // Si existe un polígono actualmente dibujado, eliminarlo
-    if (currentPolygon) {
+   /*  if (currentPolygon) {
         map.removeLayer(currentPolygon);
-    }
+    } */
 
     // Dibujar el nuevo polígono si se encuentra el distrito
     if (selectedDistrict) {
