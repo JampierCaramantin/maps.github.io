@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -21,103 +22,149 @@
     <title>:. Mapa 🌎 .:</title>
 </head>
 <body>
-    <h2>Maps</h2>
-    
-    <input type="text" id="coordenadas" placeholder="Ingresa coordenadas press ENTER" class="busqueda">
-    <button onclick="buscarUbicacion()" class="btn-buscar">Buscar</button>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1><i class="fas fa-map-marked-alt"></i> Sistema de Mapas</h1>
+        </header>
 
-    <select name="select-location" id="select-location" class="distr">
-        <option value="-1">Seleccione un Lugar</option>
-        <!-- <option value="-12.0510554271, -77.0490377322">Lima</option> -->
-        <option value="-11.86493458099233, -77.07464767703473">Puente Piedra</option>
-        <option value="-11.97557421805167, -77.00110667355759">San Juan de Lurigancho</option>
-        <option value="-11.978183487105436, -76.83960811223577">Lurigancho</option>
-        <option value="-11.93404094087489, -77.04610423065661">Comas</option>
-        <option value="-11.96252362611667, -77.06868447922658">Los Olivos</option>
-        <option value="-11.996191458011223, -77.09307977604108">San Martín de Porres</option>
-        <option value="-11.984578648576422, -76.76568677019527">Chaclacayo</option>
-        <option value="-11.990926218901324, -77.05272205832999">Independencia</option>
-        <option value="-12.021878719231436, -76.88941023805218">Ate</option>
-        <option value="-12.024874693513116, -77.03395069842851">Rímac</option>
-        <option value="-12.037600831884157, -76.99776262828132">El Agustino</option>
-        <option value="-12.050946, -77.033043">Lima</option>
-        <option value="CARMEN DE LA LEGUA">Carmen de la Legua</option>
-        <option value="-12.061774, -77.04845">Breña</option>
-        <option value="BELLAVISTA">Bellavista</option>
-        <option value="-12.0879993406, -76.9258984551">La Molina</option>
-        <option value="-12.0723184628, -77.0173714881">La Victoria</option>
-        <option value="-12.0741048546, -76.9972984501">San Luis</option>
-        <option value="-12.073357, -77.050252">Jesús María</option>
-        <option value="-12.075497, -77.069693">Pueblo Libre</option>
-        <option value="-12.1272261836, -76.9845188056">Santiago De Surco</option>
-        <option value="-12.0975356033, -76.9952627269">San Borja</option>
-        <option value="-12.113401365, -77.0129895952">Surquillo</option>
-        <option value="-12.1578203594, -76.9665238387">San Juan de Miraflores</option>
-        <option value="VILLA MARIA DEL TRIUNFO">Villa María del Triunfo</option>
-        <option value="CHORRILLOS">Chorrillos</option>
-        <option value="PUNTA HERMOSA">Punta Hermosa</option>
-        <option value="PUNTA NEGRA">Punta Negra</option>
-        <option value="SAN BARTOLO">San Bartolo</option>
-        <option value="-12.4087115867, -76.7673087796">Santa María del Mar</option>
-        <option value="-12.2343483538, -76.8015572686">Lurín</option>
-        <option value="VILLA EL SALVADOR">Villa El Salvador</option>
-        <option value="-12.072938, -76.777085">Cieneguilla</option>
-        <option value="-11.8074226462, -76.9729546072">Carabayllo</option>
-        <option value="-11.878102, -77.130375">Ventanilla</option>
-        <option value="-11.702568503, -77.0958901385">Ancón</option>
-        <option value="-12.1207933935, -77.029088411">Miraflores</option>
-        <option value="-12.0990010539, -77.0367723891">San Isidro</option>
-        <option value="-12.094578172, -77.0670147948">Magdalena del Mar</option>
-        <option value="-12.0765987497, -77.0900896423">San Miguel</option>
-        <option value="-12.06616, -77.108402">La Perla</option>
-        <option value="-12.055857, -77.1387">Callao</option>
-        <option value="-11.8048866225, -77.1633216574">Santa Rosa</option>
-        <option value="-12.070997, -77.163087">La Punta</option>
-        <option value="-12.4662357218, -76.7759877776">Pucusana</option>
-        <option value="-12.0432355795, -76.9632530075">Santa Anita</option>
-    </select>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Map Section -->
+            <section class="map-section">
+                <div id="map"></div>
+            </section>
 
-    <select name="select-distrito" id="comboDistritos" class="distr">
-        <option value="">Seleccione un distrito</option>
-        <!-- Las opciones se cargarán dinámicamente desde el JSON -->
-    </select>
+            <!-- Dashboard Section -->
+            <aside class="dashboard">
+                <div class="dashboard-header">
+                    <h3><i class="fas fa-sliders-h"></i> Controles</h3>
+                </div>
 
-    <form id="search-form">
-        <input type="text" id="address-input" placeholder="Ingresa una dirección" class="busqueda"/>
-        <button type="submit" class="btn-buscar">Buscar</button>
-    </form>
-    <input type="file" id="fileInput" />
-    <button id="openModal">Filtros</button>
-    <div id="map"></div>
+                <!-- Search Coordinates -->
+                <div class="control-group">
+                    <label for="coordenadas">
+                        <i class="fas fa-crosshairs"></i> Coordenadas
+                    </label>
+                    <div class="input-group">
+                        <input type="text" id="coordenadas" placeholder="Ingresa coordenadas" class="control-input">
+                        <button onclick="buscarCoordenadas()" class="control-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
 
+                <!-- District Selector -->
+                <div class="control-group">
+                    <label for="comboDistritos">
+                        <i class="fas fa-map-pin"></i> Distrito
+                    </label>
+                    <select name="select-distrito" id="comboDistritos" class="control-select">
+                        <option value="">Seleccione un distrito</option>
+                        <!-- Las opciones se cargarán dinámicamente desde el JSON -->
+                    </select>
+                </div>
 
-    <div id="overlay"></div>
-    <div id="modal">
-      <h2>Filtros</h2>
-      <label for="zonaSelect">Zona:</label>
-      <select id="zonaSelect">
-        <option value="">-- Todas las Zonas --</option>
-      </select>
-      <br><br>
-      <label for="clienteInput">Buscar Cliente:</label>
-      <input type="text" id="clienteInput" placeholder="Nombre del cliente..." />
-      <ul id="suggestions" style="list-style: none; padding: 0; margin-top: 5px;"></ul>
-      <br>
-      <button id="applyFilters">Aplicar Filtros</button>
+                <!-- Address Search -->
+                <div class="control-group">
+                    <label for="address-input">
+                        <i class="fas fa-map-marker-alt"></i> Dirección
+                    </label>
+                    <form id="search-form" class="search-form">
+                        <div class="input-group">
+                            <input type="text" id="address-input" placeholder="Ingresa una dirección" class="control-input"/>
+                            <button type="submit" class="control-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- File Upload -->
+                <div class="control-group">
+                    <label for="fileInput">
+                        <i class="fas fa-file-upload"></i> Cargar Archivo
+                    </label>
+                    <input type="file" id="fileInput" class="control-file" />
+                </div>
+
+                <!-- Filters Button -->
+                <div class="control-group">
+                    <button id="openModal" class="control-btn control-btn-primary">
+                        <i class="fas fa-filter"></i> Filtros Avanzados
+                    </button>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="control-group">
+                    <h4><i class="fas fa-bolt"></i> Acciones Rápidas</h4>
+                    <div class="quick-actions">
+                        <button class="quick-btn" onclick="resetMap()">
+                            <i class="fas fa-home"></i>
+                            <span>Centrar</span>
+                        </button>
+                        <button class="quick-btn" onclick="toggleLayers()">
+                            <i class="fas fa-layer-group"></i>
+                            <span>Capas</span>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+        </main>
     </div>
 
-
-
+    <!-- Modal -->
+    <div id="overlay"></div>
+    <div id="modal">
+        <div class="modal-header">
+            <h2><i class="fas fa-filter"></i> Filtros Avanzados</h2>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-content">
+            <div class="filter-group">
+                <label for="zonaSelect">Zona:</label>
+                <select id="zonaSelect" class="filter-select">
+                    <option value="">-- Todas las Zonas --</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="clienteInput">Buscar Cliente:</label>
+                <input type="text" id="clienteInput" placeholder="Nombre del cliente..." class="filter-input" />
+                <ul id="suggestions" class="suggestions-list"></ul>
+            </div>
+            <div class="filter-actions">
+                <button id="applyFilters" class="filter-btn">
+                    <i class="fas fa-check"></i> Aplicar Filtros
+                </button>
+                <button class="filter-btn filter-btn-secondary" onclick="clearFilters()">
+                    <i class="fas fa-times"></i> Limpiar
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="maps.js"></script>
-    <script src="distritos.js"></script>
+    <script src="layesMaps.js"></script>
 
-    <script src="lug_interes.js"></script>
+
+
+
+    <!-- <script src="lug_interes.js"></script> -->
     <script src="dist/leaflet.awesome-markers.js"></script>
 
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-omnivore/0.3.4/leaflet-omnivore.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-plugins/3.4.0/layer/vector/KML.js"></script>
+
+
+    <!-- cargar logica y json de los distritos -->
+    <script src="distritos.js"></script>
     <script src="distritos-mapa.js"></script>
-    <script src="cargar_excel.js"></script>
+    
+
+
+    <!-- <script src="cargar_excel.js"></script> -->
+   <!-- !--  <script src="cargar_kml.js"></script> -->
 </body>
 </html>

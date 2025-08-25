@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Rutas - Distribución y Ventas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            height: 100vh;
+            gap: 0;
+        }
+        
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .map-container {
+            position: relative;
+        }
+        
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #2d3748;
+            margin-bottom: 25px;
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #4a5568;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        select, input, button {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .client-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .client-item {
+            padding: 10px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s ease;
+        }
+        
+        .client-item:hover {
+            background-color: rgba(102, 126, 234, 0.1);
+        }
+        
+        .client-item:last-child {
+            border-bottom: none;
+        }
+        
+        .client-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .route-info {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+        }
+        
+        .route-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .stat {
+            text-align: center;
+            padding: 8px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 6px;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #4a5568;
+            margin-top: 2px;
+        }
+        
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1>🚚 RouteOptimizer Pro</h1>
+            
+            <div class="section">
+                <h3>Tipo de Ruta</h3>
+                <div class="form-group">
+                    <label for="routeType">Seleccionar tipo:</label>
+                    <select id="routeType">
+                        <option value="delivery">🚛 Reparto/Distribución</option>
+                        <option value="sales">👤 Vendedor de Campo</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>Configuración de Vehículo</h3>
+                <div class="form-group">
+                    <label for="vehicleCapacity">Capacidad (kg):</label>
+                    <input type="number" id="vehicleCapacity" value="1000" min="1">
+                </div>
+                <div class="form-group">
+                    <label for="maxStops">Máximo paradas:</label>
+                    <input type="number" id="maxStops" value="15" min="1" max="50">
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>Clientes Disponibles</h3>
+                <div class="client-list" id="clientList">
+                    <!-- Los clientes se cargan dinámicamente -->
+                </div>
+                <button id="selectAllBtn" style="margin-top: 10px;">Seleccionar Todos</button>
+            </div>
+            
+            <div class="section">
+                <button id="calculateRouteBtn">🔄 Calcular Ruta Óptima</button>
+                <button id="clearRouteBtn" style="margin-top: 10px; background: #e53e3e;">🗑️ Limpiar Ruta</button>
+            </div>
+            
+            <div id="routeInfo" class="route-info" style="display: none;">
+                <h3>📊 Información de Ruta</h3>
+                <div class="route-stats">
+                    <div class="stat">
+                        <div class="stat-value" id="totalDistance">0</div>
+                        <div class="stat-label">Distancia (km)</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="totalTime">0</div>
+                        <div class="stat-label">Tiempo (min)</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="totalStops">0</div>
+                        <div class="stat-label">Paradas</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="fuelCost">$0</div>
+                        <div class="stat-label">Costo Combustible</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
+    <script>
+        // Inicializar mapa centrado en Lima, Perú
+        const map = L.map('map').setView([-12.0464, -77.0428], 11);
+        
+        // Agregar tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        
+        // Datos de ejemplo - clientes en Lima
+        const sampleClients = [
+            { id: 1, name: "Supermercado Central", lat: -12.0464, lng: -77.0428, demand: 150, priority: "alta" },
+            { id: 2, name: "Tienda San Isidro", lat: -12.0931, lng: -77.0465, demand: 80, priority: "media" },
+            { id: 3, name: "Mayorista Miraflores", lat: -12.1199, lng: -77.0299, demand: 200, priority: "alta" },
+            { id: 4, name: "Minimarket Surco", lat: -12.1391, lng: -77.0178, demand: 60, priority: "baja" },
+            { id: 5, name: "Restaurant La Molina", lat: -12.0769, lng: -76.9441, demand: 90, priority: "media" },
+            { id: 6, name: "Hotel Barranco", lat: -12.1407, lng: -77.0205, demand: 120, priority: "alta" },
+            { id: 7, name: "Oficina Pueblo Libre", lat: -12.0764, lng: -77.0631, demand: 40, priority: "baja" },
+            { id: 8, name: "Centro Comercial", lat: -12.0947, lng: -77.0348, demand: 180, priority: "alta" },
+            { id: 9, name: "Farmacia Independencia", lat: -12.0046, lng: -77.0512, demand: 70, priority: "media" },
+            { id: 10, name: "Panadería Breña", lat: -12.0558, lng: -77.0508, demand: 50, priority: "baja" }
+        ];
+        
+        // Depot/Almacén principal
+        const depot = { lat: -12.0464, lng: -77.0428, name: "Almacén Principal" };
+        
+        let clientMarkers = [];
+        let routeControl = null;
+        let selectedClients = [];
+        
+        // Colores para diferentes prioridades
+        const priorityColors = {
+            'alta': '#e53e3e',
+            'media': '#f6ad55', 
+            'baja': '#48bb78'
+        };
+        
+        // Inicializar la aplicación
+        function initApp() {
+            renderClientList();
+            addDepotMarker();
+            addClientMarkers();
+            setupEventListeners();
+        }
+        
+        // Renderizar lista de clientes
+        function renderClientList() {
+            const clientList = document.getElementById('clientList');
+            clientList.innerHTML = '';
+            
+            sampleClients.forEach(client => {
+                const clientItem = document.createElement('div');
+                clientItem.className = 'client-item';
+                clientItem.innerHTML = `
+                    <input type="checkbox" id="client-${client.id}" value="${client.id}">
+                    <label for="client-${client.id}" style="margin: 0; cursor: pointer; flex: 1;">
+                        <strong>${client.name}</strong><br>
+                        <small>Demanda: ${client.demand}kg | Prioridad: ${client.priority}</small>
+                    </label>
+                `;
+                clientList.appendChild(clientItem);
+            });
+        }
+        
+        // Agregar marcador del depósito
+        function addDepotMarker() {
+            const depotIcon = L.divIcon({
+                html: '🏭',
+                iconSize: [30, 30],
+                className: 'depot-icon'
+            });
+            
+            L.marker([depot.lat, depot.lng], { icon: depotIcon })
+                .addTo(map)
+                .bindPopup(`<b>${depot.name}</b><br>Centro de Distribución`);
+        }
+        
+        // Agregar marcadores de clientes
+        function addClientMarkers() {
+            sampleClients.forEach(client => {
+                const color = priorityColors[client.priority];
+                const marker = L.circleMarker([client.lat, client.lng], {
+                    radius: 8,
+                    fillColor: color,
+                    color: '#fff',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                }).addTo(map);
+                
+                marker.bindPopup(`
+                    <b>${client.name}</b><br>
+                    Demanda: ${client.demand}kg<br>
+                    Prioridad: <span style="color: ${color};">${client.priority}</span>
+                `);
+                
+                clientMarkers.push({ marker, client });
+            });
+        }
+        
+        // Configurar event listeners
+        function setupEventListeners() {
+            document.getElementById('selectAllBtn').addEventListener('click', toggleSelectAll);
+            document.getElementById('calculateRouteBtn').addEventListener('click', calculateOptimalRoute);
+            document.getElementById('clearRouteBtn').addEventListener('click', clearRoute);
+            
+            // Actualizar tipo de ruta
+            document.getElementById('routeType').addEventListener('change', updateRouteType);
+        }
+        
+        // Seleccionar/deseleccionar todos los clientes
+        function toggleSelectAll() {
+            const checkboxes = document.querySelectorAll('#clientList input[type="checkbox"]');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            
+            checkboxes.forEach(cb => {
+                cb.checked = !allChecked;
+            });
+            
+            document.getElementById('selectAllBtn').textContent = 
+                allChecked ? 'Seleccionar Todos' : 'Deseleccionar Todos';
+        }
+        
+        // Actualizar configuración según tipo de ruta
+        function updateRouteType() {
+            const routeType = document.getElementById('routeType').value;
+            const capacityInput = document.getElementById('vehicleCapacity');
+            const maxStopsInput = document.getElementById('maxStops');
+            
+            if (routeType === 'delivery') {
+                capacityInput.value = 1000;
+                maxStopsInput.value = 15;
+            } else {
+                capacityInput.value = 50; // Vendedor lleva muestras
+                maxStopsInput.value = 8;
+            }
+        }
+        
+        // Calcular ruta óptima
+        function calculateOptimalRoute() {
+            const selectedClientIds = Array.from(document.querySelectorAll('#clientList input:checked'))
+                .map(cb => parseInt(cb.value));
+            
+            if (selectedClientIds.length === 0) {
+                alert('Por favor selecciona al menos un cliente');
+                return;
+            }
+            
+            const maxStops = parseInt(document.getElementById('maxStops').value);
+            if (selectedClientIds.length > maxStops) {
+                alert(`Máximo ${maxStops} paradas permitidas. Seleccionaste ${selectedClientIds.length}.`);
+                return;
+            }
+            
+            selectedClients = sampleClients.filter(client => selectedClientIds.includes(client.id));
+            
+            // Mostrar loading
+            const calculateBtn = document.getElementById('calculateRouteBtn');
+            calculateBtn.textContent = '⏳ Calculando...';
+            calculateBtn.classList.add('pulse');
+            
+            setTimeout(() => {
+                generateOptimizedRoute();
+                calculateBtn.textContent = '🔄 Calcular Ruta Óptima';
+                calculateBtn.classList.remove('pulse');
+            }, 1500);
+        }
+        
+        // Generar ruta optimizada (algoritmo simplificado)
+        function generateOptimizedRoute() {
+            // Limpiar ruta anterior
+            if (routeControl) {
+                map.removeControl(routeControl);
+            }
+            
+            // Algoritmo simple: ordenar por prioridad y proximidad
+            const sortedClients = optimizeRoute(selectedClients);
+            
+            // Crear waypoints incluyendo depósito
+            const waypoints = [
+                L.latLng(depot.lat, depot.lng),
+                ...sortedClients.map(client => L.latLng(client.lat, client.lng)),
+                L.latLng(depot.lat, depot.lng) // Volver al depósito
+            ];
+            
+            // Crear control de ruta
+            routeControl = L.Routing.control({
+                waypoints: waypoints,
+                routeWhileDragging: false,
+                addWaypoints: false,
+                lineOptions: {
+                    styles: [{
+                        color: '#667eea',
+                        weight: 4,
+                        opacity: 0.8
+                    }]
+                },
+                createMarker: function(i, waypoint, n) {
+                    if (i === 0 || i === n-1) {
+                        return L.marker(waypoint.latLng, {
+                            icon: L.divIcon({
+                                html: i === 0 ? '🏭' : '🏁',
+                                iconSize: [25, 25]
+                            })
+                        });
+                    }
+                    return L.marker(waypoint.latLng, {
+                        icon: L.divIcon({
+                            html: `${i}`,
+                            iconSize: [25, 25],
+                            className: 'route-marker'
+                        })
+                    });
+                }
+            });
+            
+            routeControl.addTo(map);
+            
+            // Mostrar información de la ruta
+            setTimeout(() => {
+                displayRouteInfo(sortedClients);
+            }, 1000);
+        }
+        
+        // Algoritmo de optimización simplificado
+        function optimizeRoute(clients) {
+            // Ordenar por prioridad primero, luego por proximidad al depósito
+            return clients.sort((a, b) => {
+                const priorityWeight = { 'alta': 3, 'media': 2, 'baja': 1 };
+                const priorityDiff = priorityWeight[b.priority] - priorityWeight[a.priority];
+                
+                if (priorityDiff !== 0) return priorityDiff;
+                
+                // Si tienen la misma prioridad, ordenar por distancia al depósito
+                const distA = getDistance(depot.lat, depot.lng, a.lat, a.lng);
+                const distB = getDistance(depot.lat, depot.lng, b.lat, b.lng);
+                return distA - distB;
+            });
+        }
+        
+        // Calcular distancia entre dos puntos (fórmula haversine simplificada)
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radio de la Tierra en km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                    Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+        
+        // Mostrar información de la ruta
+        function displayRouteInfo(clients) {
+            const totalDistance = calculateTotalDistance(clients);
+            const totalTime = Math.round(totalDistance * 2.5 + clients.length * 15); // Estimación
+            const totalStops = clients.length;
+            const fuelCost = Math.round(totalDistance * 0.8); // Estimación S/. por km
+            
+            document.getElementById('totalDistance').textContent = totalDistance.toFixed(1);
+            document.getElementById('totalTime').textContent = totalTime;
+            document.getElementById('totalStops').textContent = totalStops;
+            document.getElementById('fuelCost').textContent = `S/${fuelCost}`;
+            
+            document.getElementById('routeInfo').style.display = 'block';
+        }
+        
+        // Calcular distancia total de la ruta
+        function calculateTotalDistance(clients) {
+            let totalDistance = 0;
+            
+            // Distancia del depósito al primer cliente
+            if (clients.length > 0) {
+                totalDistance += getDistance(depot.lat, depot.lng, clients[0].lat, clients[0].lng);
+            }
+            
+            // Distancias entre clientes
+            for (let i = 0; i < clients.length - 1; i++) {
+                totalDistance += getDistance(
+                    clients[i].lat, clients[i].lng,
+                    clients[i + 1].lat, clients[i + 1].lng
+                );
+            }
+            
+            // Distancia del último cliente al depósito
+            if (clients.length > 0) {
+                const lastClient = clients[clients.length - 1];
+                totalDistance += getDistance(lastClient.lat, lastClient.lng, depot.lat, depot.lng);
+            }
+            
+            return totalDistance;
+        }
+        
+        // Limpiar ruta
+        function clearRoute() {
+            if (routeControl) {
+                map.removeControl(routeControl);
+                routeControl = null;
+            }
+            
+            document.getElementById('routeInfo').style.display = 'none';
+            
+            // Deseleccionar todos los clientes
+            document.querySelectorAll('#clientList input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+            });
+            
+            document.getElementById('selectAllBtn').textContent = 'Seleccionar Todos';
+        }
+        
+        // Agregar estilos CSS dinámicamente para los marcadores de ruta
+        const style = document.createElement('style');
+        style.textContent = `
+            .route-marker {
+                background: #667eea !important;
+                color: white !important;
+                border-radius: 50% !important;
+                text-align: center !important;
+                line-height: 25px !important;
+                font-weight: bold !important;
+                font-size: 12px !important;
+                border: 2px solid white !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+            }
+            
+            .depot-icon {
+                text-align: center !important;
+                line-height: 30px !important;
+                font-size: 20px !important;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Inicializar aplicación
+        initApp();
+    </script>
+</body>
+</html>
